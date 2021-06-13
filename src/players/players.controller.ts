@@ -1,7 +1,7 @@
 // Dependencies
 import { Controller, Get, Delete, Post, Body, Query } from '@nestjs/common'
-import { DeletePlayerDTO, GetPlayerDTO, StorePlayerDTO } from './dtos'
-import { Player } from './interfaces'
+import { DeletePlayerDTO, GetPlayerDTO, StorePlayerDTO, UpdatePlayerDTO } from './dtos'
+import { Player } from './schemas'
 import { PlayersService } from './players.service'
 
 // Controller
@@ -13,8 +13,11 @@ export class PlayersController {
 
   // Endpoints
   @Post()
-  async storePlayer(@Body() params: StorePlayerDTO): Promise<Player> {
-    return this.service.storePlayer(params)
+  async storePlayer(
+    @Query() params: UpdatePlayerDTO,
+    @Body() body: StorePlayerDTO
+  ): Promise<Player> {
+    return this.service.storePlayer(body, params)
   }
 
   @Get()
