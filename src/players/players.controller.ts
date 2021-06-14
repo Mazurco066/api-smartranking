@@ -1,6 +1,7 @@
 // Dependencies
-import { Controller, Get, Delete, Post, Body, Query } from '@nestjs/common'
-import { DeletePlayerDTO, GetPlayerDTO, StorePlayerDTO, UpdatePlayerDTO } from './dtos'
+import { Controller, Get, Delete, Post, Body, Put, Param } from '@nestjs/common'
+import { StorePlayerDTO } from './dtos'
+import { PlayerParamsPipe } from './pipes'
 import { Player } from './schemas'
 import { PlayersService } from './players.service'
 
@@ -13,20 +14,30 @@ export class PlayersController {
 
   // Endpoints
   @Post()
-  async storePlayer(
-    @Query() params: UpdatePlayerDTO,
+  async storePlayer(@Body() body: StorePlayerDTO): Promise<Player> {
+    return this.service.storePlayer(body)
+  }
+
+  @Put('/:id')
+  async updatePlayer(
+    @Param('id', PlayerParamsPipe) id: string,
     @Body() body: StorePlayerDTO
   ): Promise<Player> {
-    return this.service.storePlayer(body, params)
+    return this.service.updatePlayer(body, id)
+  }
+
+  @Get('/:id')
+  async findPlayer(@Param('id', PlayerParamsPipe) id: string): Promise<Player> {
+    return this.service.findPlayer(id)
   }
 
   @Get()
-  async findPlayers(@Query() params: GetPlayerDTO): Promise<Player[] | Player> {
-    return this.service.findPlayers(params)
+  async findPlayers(): Promise<Player[] | Player> {
+    return this.service.findPlayers()
   }
 
-  @Delete()
-  async deletePlayer(@Query() params: DeletePlayerDTO): Promise<void> {
-    return this.service.deletePlayer(params)
+  @Delete('/:id')
+  async deletePlayer(@Param('id', PlayerParamsPipe) id: string): Promise<void> {
+    return this.service.deletePlayer(id)
   }
 }

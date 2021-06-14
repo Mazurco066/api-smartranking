@@ -1,3 +1,12 @@
+// Dependencies
+import { IsNotEmpty, IsString } from 'class-validator'
+
 export class UpdatePlayerDTO {
-  readonly email?: string
+  @IsNotEmpty({ message: 'Campo "phoneNumer" não deve ser vazio' })
+  @IsString({ message: 'Campo "phoneNumer" deve ser do tipo String' })
+  readonly phoneNumer: string
+
+  @IsNotEmpty({ message: 'Campo "email" não deve ser vazio' })
+  @IsString({ message: 'Campo "email" deve ser do tipo String' })
+  readonly name: string
 }

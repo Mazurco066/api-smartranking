@@ -6,10 +6,10 @@ import { v4 } from 'uuid'
 // Model
 @Schema({ timestamps: true, collection: 'Players'})
 export class Player {
-  @Prop({ type: String, default: () => v4(), unique: true, required: false })
+  @Prop({ type: String, default: () => v4(), required: false })
   _id: string
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   phoneNumber: string
 
   @Prop({ required: true, unique: true })
