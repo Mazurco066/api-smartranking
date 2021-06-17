@@ -1,13 +1,13 @@
 // Dependencies
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
-import { v4 } from 'uuid'
+import { ObjectId } from 'mongodb'
 
 // Model
 @Schema({ timestamps: true, collection: 'Players'})
 export class Player {
-  @Prop({ type: String, default: () => v4(), required: false })
-  _id: string
+  @Prop({ type: String, default: () => new ObjectId(), required: false })
+  _id: ObjectId
 
   @Prop({ required: true })
   phoneNumber: string

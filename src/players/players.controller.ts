@@ -1,6 +1,6 @@
 // Dependencies
 import { Controller, Get, Delete, Post, Body, Put, Param } from '@nestjs/common'
-import { StorePlayerDTO } from './dtos'
+import { StorePlayerDTO, UpdatePlayerDTO } from './dtos'
 import { PlayerParamsPipe } from './pipes'
 import { Player } from './schemas'
 import { PlayersService } from './players.service'
@@ -21,7 +21,7 @@ export class PlayersController {
   @Put('/:id')
   async updatePlayer(
     @Param('id', PlayerParamsPipe) id: string,
-    @Body() body: StorePlayerDTO
+    @Body() body: UpdatePlayerDTO
   ): Promise<Player> {
     return this.service.updatePlayer(body, id)
   }
@@ -32,7 +32,7 @@ export class PlayersController {
   }
 
   @Get()
-  async findPlayers(): Promise<Player[] | Player> {
+  async findPlayers(): Promise<Player[]> {
     return this.service.findPlayers()
   }
 

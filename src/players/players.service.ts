@@ -3,7 +3,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { MongoError } from 'mongodb'
-import { StorePlayerDTO } from './dtos'
+import { StorePlayerDTO, UpdatePlayerDTO } from './dtos'
 import { Player, PlayerDocument } from './schemas'
 
 // Service 
@@ -21,18 +21,23 @@ export class PlayersService {
   // Public methods
   async storePlayer(body: StorePlayerDTO): Promise<Player> {
     this.logger.log(`storePlayer - params: ${JSON.stringify(body)}`)
-    const player = this.store(body)
+    const player = await this.store(body)
     return player
   }
 
-  async updatePlayer(body: StorePlayerDTO, id: string): Promise<Player> {
+  async updatePlayer(body: UpdatePlayerDTO, id: string): Promise<Player> {
     this.logger.log(`updatePlayer - params: ${JSON.stringify(body)}`)
-    const player = this.update(body, id)
+    const player = await this.update(body, id)
     return player
   }
 
   async findPlayer(id: string): Promise<Player> {
-    return await this.searchPlayer(id)
+    const player = await this.searchPlayer(id)
+    if (!player) {
+      throw new NotFoundException(`Jogador de id ${id} não encontrado!`)
+    }
+
+    return player
   }
 
   async findPlayers(): Promise<Player[]> {
@@ -60,7 +65,7 @@ export class PlayersService {
     }
   }
 
-  private async update(data: StorePlayerDTO, id: string): Promise<Player> {
+  private async update(data: UpdatePlayerDTO, id: string): Promise<Player> {
     try {
 
       const r = await this.playerSchema.findByIdAndUpdate(id, {
@@ -76,9 +81,7 @@ export class PlayersService {
   }
 
   private async searchPlayer(id: string): Promise<Player> {
-    const r = await this.playerSchema.findOne({ _id: id })
-    if (!r) throw new NotFoundException('Player not found.')
-    return r
+    return await this.playerSchema.findOne({ _id: id })
   }
 
   private async listPlayers(): Promise<Player[]> {

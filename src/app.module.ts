@@ -6,6 +6,7 @@ import { databaseURI } from './common'
 
 // Modules
 import { PlayersModule } from './players/players.module'
+import { CategoriesModule } from './categories/categories.module'
 
 // Init end variables
 config()
@@ -19,7 +20,8 @@ config()
       useFindAndModify: false,
       dbName: process.env.MONGODB_DATABASE
     }),
-    PlayersModule
+    PlayersModule,
+    CategoriesModule
   ],
   controllers: [],
   providers: [],
