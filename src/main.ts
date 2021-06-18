@@ -1,6 +1,7 @@
 // Dependencies
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
+import { HttpExceptionFilter, MongoExceptionFilter } from './common/filters'
 
 import { AppModule } from './app.module'
 
@@ -18,6 +19,10 @@ async function bootstrap() {
 
   // Pipes, filters and prefixes
   app.useGlobalPipes(new ValidationPipe(validationOptions))
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new MongoExceptionFilter()
+  )
 
   // Start server
   await app.listen(3001)

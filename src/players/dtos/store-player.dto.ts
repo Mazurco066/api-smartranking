@@ -11,7 +11,7 @@ export class StorePlayerDTO {
   @IsEmail({}, { message: 'Campo "email" deve conter um endereço valido' })
   readonly email: string
 
-  @IsNotEmpty({ message: 'Campo "email" não deve ser vazio' })
-  @IsString({ message: 'Campo "email" deve ser do tipo String' })
+  @IsNotEmpty({ message: 'Campo "name" não deve ser vazio' })
+  @IsString({ message: 'Campo "name" deve ser do tipo String' })
   readonly name: string
 }

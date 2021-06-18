@@ -2,7 +2,7 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { config } from 'dotenv'
-import { databaseURI } from './common'
+import { databaseURI } from './common/config'
 
 // Modules
 import { PlayersModule } from './players/players.module'

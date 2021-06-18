@@ -6,7 +6,7 @@ export class UpdatePlayerDTO {
   @IsString({ message: 'Campo "phoneNumer" deve ser do tipo String' })
   readonly phoneNumber: string
 
-  @IsNotEmpty({ message: 'Campo "email" não deve ser vazio' })
-  @IsString({ message: 'Campo "email" deve ser do tipo String' })
+  @IsNotEmpty({ message: 'Campo "name" não deve ser vazio' })
+  @IsString({ message: 'Campo "name" deve ser do tipo String' })
   readonly name: string
 }

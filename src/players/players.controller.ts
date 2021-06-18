@@ -1,7 +1,7 @@
 // Dependencies
 import { Controller, Get, Delete, Post, Body, Put, Param } from '@nestjs/common'
 import { StorePlayerDTO, UpdatePlayerDTO } from './dtos'
-import { PlayerParamsPipe } from './pipes'
+import { ValidateParamsPipe } from '../common/pipes'
 import { Player } from './schemas'
 import { PlayersService } from './players.service'
 
@@ -20,14 +20,14 @@ export class PlayersController {
 
   @Put('/:id')
   async updatePlayer(
-    @Param('id', PlayerParamsPipe) id: string,
+    @Param('id', ValidateParamsPipe) id: string,
     @Body() body: UpdatePlayerDTO
   ): Promise<Player> {
     return this.service.updatePlayer(body, id)
   }
 
   @Get('/:id')
-  async findPlayer(@Param('id', PlayerParamsPipe) id: string): Promise<Player> {
+  async findPlayer(@Param('id', ValidateParamsPipe) id: string): Promise<Player> {
     return this.service.findPlayer(id)
   }
 
@@ -37,7 +37,7 @@ export class PlayersController {
   }
 
   @Delete('/:id')
-  async deletePlayer(@Param('id', PlayerParamsPipe) id: string): Promise<void> {
+  async deletePlayer(@Param('id', ValidateParamsPipe) id: string): Promise<void> {
     return this.service.deletePlayer(id)
   }
 }

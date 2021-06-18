@@ -1,7 +1,7 @@
 // Dependencies
 import { Controller, Post, Get, Put, Delete, Param, Body } from '@nestjs/common'
 import { CategoriesService } from './categories.service'
-import { CategoryParamsPipe } from './pipes'
+import { ValidateParamsPipe } from '../common/pipes'
 import { StoreCategoryDTO, UpdateCategoryDTO } from './dtos'
 import { Category } from './schemas'
 
@@ -20,14 +20,14 @@ export class CategoriesController {
 
   @Put('/:id')
   async updateCategory(
-    @Param('id', CategoryParamsPipe) id: string,
+    @Param('id', ValidateParamsPipe) id: string,
     @Body() body: UpdateCategoryDTO
   ): Promise<Category> {
     return this.service.updateCategory(body, id)
   }
 
   @Get('/:id')
-  async findCategory(@Param('id', CategoryParamsPipe) id: string): Promise<Category> {
+  async findCategory(@Param('id', ValidateParamsPipe) id: string): Promise<Category> {
     return this.service.findCategory(id)
   }
 
@@ -37,7 +37,7 @@ export class CategoriesController {
   }
 
   @Delete('/:id')
-  async deleteCategory(@Param('id', CategoryParamsPipe) id: string): Promise<void> {
+  async deleteCategory(@Param('id', ValidateParamsPipe) id: string): Promise<void> {
     return this.service.deleteCategory(id)
   }
 
