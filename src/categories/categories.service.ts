@@ -87,6 +87,7 @@ export class CategoriesService {
     return await this.assign(isRegistered)
   }
 
+
   // Persist methods
   async findById(id: string): Promise<Category> {
     return await this.categorySchema.findOne({ _id: id }).populate('players')
@@ -94,6 +95,14 @@ export class CategoriesService {
 
   async findByTitle(title: string): Promise<Category> {
     return await this.categorySchema.findOne({ title }) 
+  }
+
+  async findPlayerCategory(id: string): Promise<Category> {
+    return await this.categorySchema.findOne({
+      players: {
+        $in: [new ObjectId(id)]
+      }
+    })
   }
 
   private async store(data: StoreCategoryDTO): Promise<Category> {
