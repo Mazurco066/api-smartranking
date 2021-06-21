@@ -72,8 +72,26 @@ export class ChallengesService {
     return await this.update(body, id)
   }
 
+  async findChallenge(id: string): Promise<Challenge> {
+    const foundChallenge = await this.findById(id)
+    if (!foundChallenge) {
+      throw new NotFoundException(`Desafio de id ${id} não encontrado!`)
+    }
+
+    return foundChallenge
+  }
+
   async findAllChallenges(id?: string): Promise<Challenge[]> {
     return id ? await this.findByPlayer(id) : await this.findAll()
+  }
+
+  async deleteChallenge(id: string): Promise<void> {
+    const foundChallenge = await this.findById(id)
+    if (!foundChallenge) {
+      throw new NotFoundException(`Desafio de id ${id} não encontrado!`)
+    }
+
+    await this.delete(id)
   }
 
   // Persist methods
@@ -139,6 +157,16 @@ export class ChallengesService {
       })
       return r
       
+    } catch(e) {
+      throw new MongoError({ ...e })
+    }
+  }
+
+  private async delete(id: string) {
+    try {
+      const r = await this.challengeSchema.deleteOne({ _id: id })
+      return r.deletedCount ? true : false
+
     } catch(e) {
       throw new MongoError({ ...e })
     }

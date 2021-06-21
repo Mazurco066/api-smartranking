@@ -87,7 +87,6 @@ export class CategoriesService {
     return await this.assign(isRegistered)
   }
 
-
   // Persist methods
   async findById(id: string): Promise<Category> {
     return await this.categorySchema.findOne({ _id: id }).populate('players')

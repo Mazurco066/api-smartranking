@@ -26,8 +26,18 @@ export class ChallengesController {
     return this.service.updateChallenge(body, id)
   }
 
+  @Get('/:id')
+  async findChallenge(@Param('id', ValidateParamsPipe) id: string): Promise<Challenge> {
+    return this.service.findChallenge(id)
+  }
+
   @Get()
   async getChallenges(@Query('playerId') id: string) : Promise<Challenge[]> {
     return await this.service.findAllChallenges(id)
+  }
+
+  @Delete('/:id')
+  async deleteCategory(@Param('id', ValidateParamsPipe) id: string): Promise<void> {
+    return this.service.deleteChallenge(id)
   }
 }
