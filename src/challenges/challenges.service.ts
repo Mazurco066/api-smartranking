@@ -3,11 +3,12 @@ import { BadRequestException, Injectable, Logger, NotFoundException } from '@nes
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { MongoError, ObjectId } from 'mongodb'
-import { StoreChallengeDTO, UpdateChallengeDTO } from './dtos'
+import { AssignChallengeDTO, StoreChallengeDTO, UpdateChallengeDTO } from './dtos'
 import { Challenge, ChallengeDocument, Match, MatchDocument } from './schemas'
 import { PlayersService } from '../players/players.service'
 import { CategoriesService } from '../categories/categories.service'
 import { Category } from '../categories/schemas'
+import { ChallengeStatus } from './enums'
 
 // Service 
 @Injectable()
@@ -62,6 +63,11 @@ export class ChallengesService {
   async updateChallenge(body: UpdateChallengeDTO, id: string): Promise<Challenge> {
     this.logger.log(`updateChallenge - params: ${JSON.stringify(body)}`)
 
+    // Validate changes
+    if (!body.challengeDateTime && !body.status)  {
+      throw new BadRequestException('Não há dados informados para atualziação do desafio!')
+    }
+
     // Validate challenge
     const hasChallenge = await this.findById(id)
     if (!hasChallenge) {
@@ -70,6 +76,28 @@ export class ChallengesService {
 
     // Updating schema
     return await this.update(body, id)
+  }
+
+  async assignChallengeMatch(body: AssignChallengeDTO, id: string): Promise<Challenge> {
+    this.logger.log(`assignChallengeMatch - params: ${JSON.stringify(body)}`)
+
+    // Validate challenge
+    const hasChallenge = await this.findById(id)
+    if (!hasChallenge) {
+      throw new NotFoundException(`Desafio de id ${id} não encontrado!`)
+    }
+
+    // Is winner a player from challenge
+    const isWinnerAChallenger = hasChallenge.players.find((p: any) => p._id === body.def)
+    if (!isWinnerAChallenger) {
+      throw new BadRequestException(`O Jogador de id ${body.def} não está entre os jogadores do desafio!`)
+    }
+
+    // Create match
+    const createdMatch = await this.storeMatch(body, hasChallenge.category, hasChallenge.players)
+
+    // Updating challenge
+    return await this.updateChallengeStatus(id, ChallengeStatus.DONE, createdMatch._id)
   }
 
   async findChallenge(id: string): Promise<Challenge> {
@@ -121,12 +149,28 @@ export class ChallengesService {
       .populate('players')
   }
 
+  private async storeMatch(data: AssignChallengeDTO, category: string, players: ObjectId[]): Promise<Match> {
+    try {
+
+      const r =  await this.matchSchema.create({
+        ...data,
+        def: new ObjectId(data.def),
+        category: category,
+        players: players
+      })
+      return r
+
+    } catch(err) {
+      throw new MongoError(err)
+    }
+  }
+
   private async store(data: StoreChallengeDTO, category: Category): Promise<Challenge> {
     try {
 
       const r = await this.challengeSchema.create({
         ...data,
-        category: category._id,
+        category: category.title,
         challengeRequestDateTime: new Date()
       })
       return r
@@ -155,6 +199,9 @@ export class ChallengesService {
       }, {
         new: true
       })
+      .populate('requester')
+      .populate('match')
+      .populate('players')
       return r
       
     } catch(e) {
@@ -162,9 +209,43 @@ export class ChallengesService {
     }
   }
 
+  private async updateChallengeStatus(id: string, status: ChallengeStatus, match: ObjectId): Promise<Challenge> {
+    try {
+
+      const r = await this.challengeSchema.findOneAndUpdate({
+        _id: id
+      }, {
+        $set: { 
+          status: status,
+          match: match
+         }
+      }, {
+        new: true
+      })
+      .populate('requester')
+      .populate('match')
+      .populate('players')
+      return r
+      
+    } catch(e) {
+      await this.deleteMatch(match)
+      throw new MongoError({ ...e })
+    }
+  }
+
   private async delete(id: string) {
     try {
       const r = await this.challengeSchema.deleteOne({ _id: id })
+      return r.deletedCount ? true : false
+
+    } catch(e) {
+      throw new MongoError({ ...e })
+    }
+  }
+
+  private async deleteMatch(id: ObjectId) {
+    try {
+      const r = await this.matchSchema.deleteOne({ _id: id })
       return r.deletedCount ? true : false
 
     } catch(e) {

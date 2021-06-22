@@ -3,6 +3,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, SchemaTypes } from 'mongoose'
 import { ObjectId } from 'mongodb'
 
+// Types
+import { ChallengeStatus } from '../enums'
+
 // Model
 @Schema({ timestamps: true, collection: 'Challenges'})
 export class Challenge {
@@ -12,8 +15,8 @@ export class Challenge {
   @Prop({ required: true })
   challengeDateTime: Date
 
-  @Prop({ required: false, default: 'PENDING' })
-  status: string
+  @Prop({ required: false, default: ChallengeStatus.PENDING })
+  status: ChallengeStatus
 
   @Prop({ required: true })
   challengeRequestDateTime: Date

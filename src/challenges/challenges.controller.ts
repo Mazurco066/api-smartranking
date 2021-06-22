@@ -2,7 +2,7 @@
 import { Controller, Post, Get, Put, Delete, Param, Query, Body } from '@nestjs/common'
 import { ChallengesService } from './challenges.service'
 import { ValidateParamsPipe } from '../common/pipes'
-import { StoreChallengeDTO, UpdateChallengeDTO } from './dtos'
+import { AssignChallengeDTO, StoreChallengeDTO, UpdateChallengeDTO } from './dtos'
 import { Challenge } from './schemas'
 
 // Controller
@@ -24,6 +24,14 @@ export class ChallengesController {
     @Body() body: UpdateChallengeDTO
   ): Promise<Challenge> {
     return this.service.updateChallenge(body, id)
+  }
+
+  @Post('/:id/match')
+   async atribuirDesafioPartida(
+    @Body() body: AssignChallengeDTO,
+    @Param('id') id: string
+  ): Promise<Challenge> {
+    return await this.service.assignChallengeMatch(body, id)           
   }
 
   @Get('/:id')

@@ -9,7 +9,7 @@ export interface Result {
 }
 
 // Model
-@Schema({ timestamps: true, collection: 'Matchs'})
+@Schema({ timestamps: true, collection: 'Matchs' })
 export class Match {
   @Prop({ type: String, default: () => new ObjectId(), required: false })
   _id: ObjectId

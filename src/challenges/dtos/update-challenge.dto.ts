@@ -1,5 +1,6 @@
 // Dependencies
-import { IsOptional, IsNotEmpty, IsString, IsDateString } from 'class-validator'
+import { IsOptional, IsString, IsDateString, IsEnum } from 'class-validator'
+import { ChallengeStatus } from '../enums'
 
 // DTO
 export class UpdateChallengeDTO {
@@ -7,7 +8,7 @@ export class UpdateChallengeDTO {
   @IsDateString({}, { message: 'Campo "challengeDateTime" deve ser do tipo Data' })
   readonly challengeDateTime: string
 
-  @IsNotEmpty({ message: 'Campo "status" não deve ser vazio' })
-  @IsString({ message: 'Campo "status" deve ser do tipo String' })
-  readonly status: string
+  @IsOptional()
+  @IsEnum(ChallengeStatus, { message: 'Status deve ser: "ACCEPTED", "DECLINED" or "CANCELED"' })
+  readonly status: ChallengeStatus
 }
