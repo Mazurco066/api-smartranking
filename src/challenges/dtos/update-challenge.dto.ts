@@ -1,5 +1,5 @@
 // Dependencies
-import { IsOptional, IsString, IsDateString, IsEnum } from 'class-validator'
+import { IsOptional, IsDateString, IsEnum } from 'class-validator'
 import { ChallengeStatus } from '../enums'
 
 // DTO
