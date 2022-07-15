@@ -19,7 +19,7 @@ config()
       useCreateIndex: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
-      dbName: process.env.MONGODB_DATABASE
+      dbName: 'SmartRankingDev'
     }),
     PlayersModule,
     CategoriesModule,
